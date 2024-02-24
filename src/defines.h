@@ -26,11 +26,14 @@
 // ================================================
 
 // Set parameters of IMU and board used
-#define IMU IMU_BNO085
-#define SECOND_IMU IMU_BNO085
-#define BOARD BOARD_WEMOSD1MINI
-#define IMU_ROTATION DEG_270
-#define SECOND_IMU_ROTATION DEG_270
+#define IMU IMU_BMI270
+#define SECOND_IMU IMU
+#define BOARD BOARD_SLIMEVR
+#define IMU_ROTATION DEG_180
+#define SECOND_IMU_ROTATION DEG_180
+
+#define PRIMARY_IMU_OPTIONAL false
+#define SECONDARY_IMU_OPTIONAL true
 
 #define MAX_IMU_COUNT 1
 
@@ -52,6 +55,7 @@ PIN_IMU_SDA, BMI160_QMC_REMAP) \
 		IMU_ROTATION,              \
 		PIN_IMU_SCL,               \
 		PIN_IMU_SDA,               \
+		PRIMARY_IMU_OPTIONAL,      \
 		PIN_IMU_INT                \
 	)                              \
 	IMU_DESC_ENTRY(                \
@@ -60,6 +64,7 @@ PIN_IMU_SDA, BMI160_QMC_REMAP) \
 		SECOND_IMU_ROTATION,       \
 		PIN_IMU_SCL,               \
 		PIN_IMU_SDA,               \
+		SECONDARY_IMU_OPTIONAL,    \
 		PIN_IMU_INT_2              \
 	)
 #endif
@@ -76,10 +81,11 @@ PIN_IMU_SDA, BMI160_QMC_REMAP) \
 // resistor values. The diagram looks like this:
 //   (Battery)--- [BATTERY_SHIELD_RESISTANCE] ---(INPUT_BOARD)---  [BATTERY_SHIELD_R2]
 //   ---(ESP32_INPUT)--- [BATTERY_SHIELD_R1] --- (GND)
-// #define BATTERY_SHIELD_RESISTANCE 180 //130k BatteryShield, 180k SlimeVR or fill in
-// external resistor value in kOhm #define BATTERY_SHIELD_R1 100 // Board voltage
-// divider resistor Ain to GND in kOhm #define BATTERY_SHIELD_R2 220 // Board voltage
-// divider resistor Ain to INPUT_BOARD in kOhm
+#define BATTERY_SHIELD_RESISTANCE \
+	180  // 130k BatteryShield, 180k SlimeVR or fill in external resistor value in kOhm
+// #define BATTERY_SHIELD_R1 100 // Board voltage divider resistor Ain to GND in kOhm
+// #define BATTERY_SHIELD_R2 220 // Board voltage divider resistor Ain to INPUT_BOARD in
+// kOhm
 
 // LED configuration:
 // Configuration Priority 1 = Highest:
@@ -95,9 +101,9 @@ PIN_IMU_SDA, BMI160_QMC_REMAP) \
 
 // Board-specific configurations
 #if BOARD == BOARD_SLIMEVR
-#define PIN_IMU_SDA 14
-#define PIN_IMU_SCL 12
-#define PIN_IMU_INT 16
+#define PIN_IMU_SDA 4
+#define PIN_IMU_SCL 5
+#define PIN_IMU_INT 10
 #define PIN_IMU_INT_2 13
 #define PIN_BATTERY_LEVEL 17
 #define LED_PIN 2
@@ -137,13 +143,13 @@ PIN_IMU_SDA, BMI160_QMC_REMAP) \
 //  #define LED_PIN 2
 //  #define LED_INVERTED true
 #ifndef BATTERY_SHIELD_RESISTANCE
-#define BATTERY_SHIELD_RESISTANCE 0
+#define BATTERY_SHIELD_RESISTANCE 180
 #endif
 #ifndef BATTERY_SHIELD_R1
-#define BATTERY_SHIELD_R1 10
+#define BATTERY_SHIELD_R1 100
 #endif
 #ifndef BATTERY_SHIELD_R2
-#define BATTERY_SHIELD_R2 47
+#define BATTERY_SHIELD_R2 220
 #endif
 #elif BOARD == BOARD_ESP01
 #define PIN_IMU_SDA 2
@@ -197,4 +203,12 @@ PIN_IMU_SDA, BMI160_QMC_REMAP) \
 	LED_OFF  // RGB LED Protocol would need to be implementetet did not brother for the
 			 // test, because the board ideal for tracker ifself
 //  #define LED_INVERTED false
+#elif BOARD == BOARD_WEMOSWROOM02
+#define PIN_IMU_SDA 2
+#define PIN_IMU_SCL 14
+#define PIN_IMU_INT 0
+#define PIN_IMU_INT_2 4
+#define PIN_BATTERY_LEVEL A0
+#define LED_PIN 16
+#define LED_INVERTED true
 #endif
